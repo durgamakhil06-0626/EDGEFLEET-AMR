@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>EDGEFLEET — Decentralized AMR Coordination System</title>
+<style>
+:root{
+  --bg:#050b13;--panel:#08121e;--panel2:#0b1725;--line:#1a3046;
+  --text:#e7eef7;--muted:#71849a;--cyan:#19d7ff;--blue:#4d8dff;
+  --green:#35e3a5;--yellow:#ffc83d;--red:#ff6b73;--purple:#a88cff;--orange:#ff963d;
+}
+*{box-sizing:border-box} body{margin:0;background:radial-gradient(circle at 50% 0,#0b1828 0,#050b13 45%,#03070c 100%);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Arial,sans-serif;letter-spacing:.03em}
+button,select{font:inherit;color:inherit}.app{min-height:100vh;display:grid;grid-template-columns:250px 1fr}
+.sidebar{position:sticky;top:0;height:100vh;background:#050b12;border-right:1px solid var(--line);padding:22px 14px;display:flex;flex-direction:column;gap:22px}
+.brand{display:flex;gap:12px;align-items:center;padding:4px 8px 18px;border-bottom:1px solid #102238}
+.logo{width:42px;height:42px;border:1px solid #16bfe5;border-radius:10px;display:grid;place-items:center;color:var(--cyan);font-size:23px;box-shadow:0 0 22px #00d9ff18}
+.brand h1{font-size:17px;margin:0;letter-spacing:.25em}.brand p{margin:3px 0 0;color:#63758a;font-size:9px;letter-spacing:.18em}
+.nav{display:grid;gap:6px}.nav button{background:transparent;border:1px solid transparent;text-align:left;padding:12px;border-radius:8px;color:#7f92a8;cursor:pointer}.nav button.active,.nav button:hover{background:#0b1a29;border-color:#1c3b55;color:#fff}.nav b{color:var(--cyan);margin-right:9px}
+.sidebox{margin-top:auto;border:1px solid var(--line);padding:12px;border-radius:9px;background:#07111c}.sidebox .row{display:flex;justify-content:space-between;margin:8px 0;color:#8193a6;font-size:11px}.ok{color:var(--green)}.warn{color:var(--yellow)}
+main{min-width:0}.topbar{height:68px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 26px;background:#060d16e8;backdrop-filter:blur(8px);position:sticky;top:0;z-index:5}.crumb{color:#8ea1b5;font-size:12px}.top-actions{display:flex;gap:8px;align-items:center}.pill{border:1px solid var(--line);padding:8px 11px;border-radius:7px;color:#9cb0c5;font-size:11px;background:#07111c}.dot{width:7px;height:7px;border-radius:50%;background:var(--green);display:inline-block;margin-right:6px;box-shadow:0 0 10px #35e3a5}.content{padding:25px;max-width:1450px;margin:auto}.hero{display:flex;justify-content:space-between;align-items:end;margin-bottom:18px}.hero h2{margin:0;font-size:27px;letter-spacing:.06em}.hero p{margin:7px 0 0;color:#70839a;font-size:12px}.hero-right{text-align:right;color:#8193a6;font-size:12px}.hero-right strong{color:var(--cyan);font-size:18px}
+.grid{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(310px,.75fr);gap:16px}.panel{background:linear-gradient(180deg,#091522,#06101a);border:1px solid var(--line);border-radius:10px;box-shadow:0 14px 40px #0005;overflow:hidden}.panel-head{padding:14px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}.panel-title{font-size:12px;color:#b9c8d8;letter-spacing:.16em}.sub{color:#61768d;font-size:10px}.mapwrap{padding:10px}.map{height:520px;border:1px solid #17314a;position:relative;overflow:hidden;background-color:#06111b;background-image:linear-gradient(#102333 1px,transparent 1px),linear-gradient(90deg,#102333 1px,transparent 1px);background-size:28px 28px}
+.map:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent 49.8%,#14b9e711 50%,transparent 50.2%),linear-gradient(transparent 49.8%,#14b9e711 50%,transparent 50.2%);pointer-events:none}
+.rack{position:absolute;width:15%;height:17%;border:1px solid #2b4055;background:repeating-linear-gradient(0deg,#0a1622,#0a1622 9px,#0e1d2b 10px);color:#53687e;font-size:10px;padding:6px}.rack span{display:block;color:#667c91}.aisle{position:absolute;color:#334b62;font-size:9px;letter-spacing:.14em}.zone{position:absolute;border:1px dashed #1d755e;background:#0b3b2d33;color:#48caa3;padding:8px;font-size:9px}.point{position:absolute;color:#b98a3a;font-size:9px}.dock{position:absolute;border:1px dashed #315270;padding:7px;color:#718da7;font-size:9px}.route{position:absolute;height:2px;background:#13c8e8;opacity:.28;transform-origin:left center}.route.r2{background:#ffb52d}.route.r3{background:#a78bfa}
+.robot{position:absolute;width:58px;transform:translate(-50%,-50%);z-index:3;transition:left .25s linear,top .25s linear}.robot .body{width:30px;height:30px;border:2px solid currentColor;border-radius:50%;background:#07131e;box-shadow:0 0 16px currentColor;display:grid;place-items:center;margin:auto;font-size:11px}.robot .label{white-space:nowrap;text-align:center;margin-top:3px;font-size:9px;color:currentColor}.robot .status{white-space:nowrap;text-align:center;font-size:8px;color:#c5d3e1}.r1{color:var(--cyan)}.r2{color:var(--yellow)}.r3{color:var(--purple)}.risk{animation:pulse 1s infinite}.risk .body{color:var(--red)}@keyframes pulse{50%{filter:brightness(1.7)}}
+.legend{display:flex;flex-wrap:wrap;gap:12px;padding:11px 15px;border-top:1px solid var(--line);color:#8ca0b4;font-size:10px}.legend i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px}.moving{background:var(--cyan)}.waiting{background:var(--yellow)}.reroute{background:var(--purple)}.conflict{background:var(--red)}.blocked{background:var(--orange)}.charging{background:var(--green)}
+.controls{padding:14px 16px;border-top:1px solid var(--line);display:grid;grid-template-columns:1fr 1fr;gap:12px}.controlrow{display:flex;gap:7px;align-items:center;flex-wrap:wrap}.controlrow label{color:#657b92;font-size:10px;letter-spacing:.15em;min-width:68px}.btn{border:1px solid #203a52;background:#081522;padding:9px 12px;border-radius:6px;cursor:pointer;color:#91a6ba;font-size:11px}.btn:hover{border-color:#287ca1;color:#fff}.btn.primary{color:var(--cyan);border-color:#12647d;background:#06202d}.btn.active{background:#0a4054;color:#fff;border-color:#159bc2}.btn.danger{border-color:#63333a;color:#ff9ba0}.btn.success{border-color:#235d4b;color:#6ff0bf}.select{background:#081522;border:1px solid #203a52;border-radius:6px;padding:9px 10px;color:#a8bacb;min-width:170px}
+.side{display:grid;gap:16px}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:12px}.robotcard{border:1px solid #1a3046;border-radius:8px;padding:10px;background:#07121d}.robotcard h4{margin:0 0 7px;font-size:11px}.robotcard .big{font-size:19px}.small{font-size:9px;color:#667b91}.bar{height:4px;background:#152638;border-radius:4px;margin-top:8px;overflow:hidden}.bar span{display:block;height:100%;background:var(--cyan)}
+.events{max-height:285px;overflow:auto;padding:9px 12px}.event{padding:9px 5px;border-bottom:1px solid #102338;font-size:10px;display:grid;grid-template-columns:58px 1fr;gap:8px}.event time{color:#496176}.event strong{color:#b9c9d8}.event.ai strong{color:var(--cyan)}.event.warn strong{color:var(--yellow)}.event.bad strong{color:#ff8f96}.metric-grid{display:grid;grid-template-columns:1fr 1fr;padding:12px;gap:8px}.metric{border:1px solid #1a3046;background:#07121d;padding:12px;border-radius:8px}.metric b{display:block;font-size:20px;color:#fff}.metric span{font-size:9px;color:#657b91}.mode{display:grid;grid-template-columns:1fr 1fr;margin:12px;border:1px solid #1d354c;border-radius:7px;overflow:hidden}.mode button{border:0;background:#08131f;padding:11px;cursor:pointer;color:#73879b;font-size:10px}.mode button.active{background:#0b4b62;color:#fff}.shield{padding:12px}.shield-main{display:flex;justify-content:space-between;align-items:center;border:1px solid #1e4f4a;background:#06231e;padding:13px;border-radius:8px}.shield-main b{color:#67efbe}.risknum{font-size:26px;color:#67efbe}.pipeline{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-top:9px}.pipe{border:1px solid #193047;text-align:center;padding:8px 2px;font-size:8px;color:#7890a5}.pipe.on{border-color:#1683a4;color:var(--cyan);background:#072536}
+.footerbar{display:flex;justify-content:space-between;padding:12px 16px;border-top:1px solid var(--line);color:#62788e;font-size:9px}.toast{position:fixed;right:22px;bottom:22px;z-index:20;background:#081725;border:1px solid #1f6b85;color:#d9edf8;padding:12px 15px;border-radius:8px;box-shadow:0 10px 35px #0008;opacity:0;transform:translateY(10px);pointer-events:none;transition:.25s}.toast.show{opacity:1;transform:none}.presentation{position:fixed;inset:0;background:#02070cdd;z-index:30;display:none;place-items:center}.presentation.show{display:grid}.presbox{width:min(760px,92vw);border:1px solid #1a5570;background:#071522;padding:28px;border-radius:14px;box-shadow:0 30px 80px #000}.presbox h2{margin-top:0}.presstep{font-size:13px;color:#93a8bb;line-height:1.7}.presstep b{color:#fff}.progress{height:5px;background:#15283a;border-radius:5px;overflow:hidden;margin:16px 0}.progress span{display:block;height:100%;background:var(--cyan);width:0;transition:.2s}.pres-actions{display:flex;justify-content:space-between}.hidden{display:none}
+@media(max-width:1050px){.app{grid-template-columns:1fr}.sidebar{display:none}.grid{grid-template-columns:1fr}.map{height:430px}}
+@media(max-width:650px){.content{padding:12px}.topbar{padding:0 12px}.hero{display:block}.hero-right{text-align:left;margin-top:12px}.controls{grid-template-columns:1fr}.cards{grid-template-columns:1fr}.map{height:390px}.rack{width:18%;height:15%}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+  <div class="brand"><div class="logo">∿</div><div><h1>EDGEFLEET</h1><p>DECENTRALIZED AMR COORDINATION</p></div></div>
+  <div class="nav">
+    <button class="active" data-scroll="live"><b>◉</b> Live Simulation</button>
+    <button data-scroll="network"><b>⌁</b> P2P Network</button>
+    <button data-scroll="safety"><b>◈</b> Safety Shield</button>
+    <button data-scroll="benchmark"><b>▦</b> Benchmark</button>
+    <button id="presentationBtn"><b>▣</b> Presentation Mode</button>
+  </div>
+  <div class="sidebox">
+    <div class="row"><span>EDGE NODES</span><span class="ok">3 ONLINE</span></div>
+    <div class="row"><span>P2P LINKS</span><span id="sideLinks">3</span></div>
+    <div class="row"><span>CENTRAL SERVER</span><span id="serverSide" class="ok">ONLINE</span></div>
+    <div class="row"><span>COLLISIONS</span><span class="ok" id="sideCollisions">0</span></div>
+  </div>
+</aside>
+
+<main>
+<header class="topbar"><div class="crumb">SIH DEMO / LIVE WAREHOUSE / EDGE COORDINATION</div><div class="top-actions"><span class="pill"><span class="dot"></span> SYSTEM ONLINE</span><span class="pill" id="clock">T+00:00</span></div></header>
+<div class="content">
+<section id="live">
+  <div class="hero">
+    <div><h2>LIVE WAREHOUSE SIMULATION</h2><p>Real-time decentralized fleet coordination with dynamic conflict resolution</p></div>
+    <div class="hero-right"><div><strong id="simTime">T+00:00</strong> · <span id="amrCount">3 AMRs</span></div><div id="modeText">DECENTRALIZED EDGE AI</div></div>
+  </div>
+  <div class="grid">
+    <div class="panel">
+      <div class="panel-head"><span class="panel-title">◌ WAREHOUSE — LIVE TOP-DOWN MAP</span><span class="sub">click an AMR for telemetry</span></div>
+      <div class="mapwrap">
+        <div class="map" id="map">
+          <div class="rack" style="left:6%;top:7%">RACK A</div><div class="rack" style="left:26%;top:7%">RACK B</div><div class="rack" style="left:46%;top:7%">RACK C</div><div class="rack" style="left:66%;top:7%">RACK D</div>
+          <div class="rack" style="left:6%;top:34%">RACK E</div><div class="rack" style="left:26%;top:34%">RACK F</div><div class="rack" style="left:46%;top:34%">RACK G</div><div class="rack" style="left:66%;top:34%">RACK H</div>
+          <div class="rack" style="left:6%;top:62%">RACK H</div><div class="rack" style="left:26%;top:62%">RACK I</div><div class="rack" style="left:46%;top:62%">RACK J</div>
+          <div class="aisle" style="left:18%;top:27%">AISLE 1</div><div class="aisle" style="left:38%;top:27%">AISLE 2</div><div class="aisle" style="left:58%;top:27%">AISLE 3</div><div class="aisle" style="left:28%;top:56%">AISLE 5</div><div class="aisle" style="left:52%;top:56%">AISLE 6</div>
+          <div class="zone" style="left:72%;top:63%;width:20%">CHARGING BANK</div>
+          <div class="dock" style="right:5%;top:12%">DOCK A</div><div class="dock" style="right:5%;top:78%">DOCK B</div>
+          <div class="point" style="left:20%;top:39%">CHOKE POINT</div><div class="point" style="left:39%;top:30%">INT-A</div><div class="point" style="left:57%;top:30%">INT-B</div><div class="point" style="left:39%;top:55%">INT-D</div>
+          <div class="route" style="left:17%;top:49%;width:66%;transform:rotate(0deg)"></div>
+          <div class="route r2" style="left:35%;top:17%;width:56%;transform:rotate(90deg)"></div>
+          <div class="route r3" style="left:23%;top:76%;width:55%;transform:rotate(-28deg)"></div>
+          <div class="robot r1" id="r1" style="left:70%;top:27%"><div class="body">01</div><div class="label">AMR-01</div><div class="status">MOVING · 85%</div></div>
+          <div class="robot r2" id="r2" style="left:83%;top:38%"><div class="body">02</div><div class="label">AMR-02</div><div class="status">WAITING · 72%</div></div>
+          <div class="robot r3" id="r3" style="left:82%;top:49%"><div class="body">03</div><div class="label">AMR-03</div><div class="status">REROUTING · 91%</div></div>
+        </div>
+      </div>
+      <div class="legend"><span><i class="moving"></i>Moving</span><span><i class="waiting"></i>Waiting</span><span><i class="reroute"></i>Rerouting</span><span><i class="conflict"></i>Conflict</span><span><i class="blocked"></i>Blocked</span><span><i class="charging"></i>Charging</span><span><i style="background:#4d8dff"></i>Completed</span><span><i style="background:#9aa8b8"></i>Idle</span></div>
+      <div class="controls">
+        <div class="controlrow"><label>CONTROL</label><button class="btn primary" id="start">▶ START DEMO</button><button class="btn" id="pause">Ⅱ PAUSE</button><button class="btn" id="reset">↻ RESET</button></div>
+        <div class="controlrow"><label>SPEED</label><button class="btn speed" data-speed=".5">0.5×</button><button class="btn speed active" data-speed="1">1×</button><button class="btn speed" data-speed="2">2×</button></div>
+        <div class="controlrow"><label>MODE</label><button class="btn modebtn active" data-mode="ai">Decentralized Edge AI</button><button class="btn modebtn" data-mode="wait">Stop-and-Wait</button></div>
+        <div class="controlrow"><label>SCENARIO</label><select class="select" id="scenario"><option value="normal">Normal Operation</option><option value="choke">Choke Point Conflict</option><option value="blocked">Blocked Aisle + Reroute</option><option value="failure">AMR-02 Failure + Handoff</option><option value="server">Central Server Failure</option></select></div>
+      </div>
+      <div class="footerbar"><span id="scenarioText">3 autonomous robots · dynamic routes enabled</span><span id="taskText">TASKS 101 / 102 / 104</span></div>
+    </div>
+
+    <div class="side">
+      <div class="panel" id="network">
+        <div class="panel-head"><span class="panel-title">◌ P2P NETWORK</span><span class="sub ok"><span class="dot"></span><span id="links">3</span> links</span></div>
+        <div class="cards">
+          <div class="robotcard"><h4 style="color:var(--cyan)">AMR-01</h4><div class="big" id="battery1">85%</div><div class="small">TASK-101 · 1.2 m/s</div><div class="bar"><span id="bar1" style="width:85%"></span></div></div>
+          <div class="robotcard"><h4 style="color:var(--yellow)">AMR-02</h4><div class="big" id="battery2">72%</div><div class="small">TASK-102 · 0.8 m/s</div><div class="bar"><span id="bar2" style="width:72%"></span></div></div>
+          <div class="robotcard"><h4 style="color:var(--purple)">AMR-03</h4><div class="big" id="battery3">91%</div><div class="small">TASK-104 · 1.0 m/s</div><div class="bar"><span id="bar3" style="width:91%"></span></div></div>
+        </div>
+        <div class="mode"><button class="active">P2P INTENT SHARE</button><button id="serverToggle">CENTRAL SERVER ONLINE</button></div>
+        <div class="events" id="events"></div>
+      </div>
+
+      <div class="panel" id="safety">
+        <div class="panel-head"><span class="panel-title">◈ SAFETY SHIELD</span><span class="sub">EDGE DECISION LOOP</span></div>
+        <div class="shield"><div class="shield-main"><div><b>COLLISION RISK</b><div class="small" id="decision">All trajectories safe</div></div><div class="risknum" id="risk">0%</div></div>
+        <div class="pipeline"><div class="pipe on">DETECT</div><div class="pipe on">PREDICT</div><div class="pipe on">DECIDE</div><div class="pipe on">ACT</div></div></div>
+      </div>
+
+      <div class="panel" id="benchmark">
+        <div class="panel-head"><span class="panel-title">▦ PERFORMANCE</span><span class="sub">DEMO BENCHMARK</span></div>
+        <div class="metric-grid">
+          <div class="metric"><b id="completion">78s</b><span>EDGE AI TASK TIME</span></div><div class="metric"><b id="baseline">176s</b><span>STOP-AND-WAIT</span></div>
+          <div class="metric"><b id="saving">55.6%</b><span>TIME REDUCTION*</span></div><div class="metric"><b id="collisions">0</b><span>INTER-ROBOT COLLISIONS</span></div>
+        </div>
+        <div class="footerbar"><span>*Presentation simulation metric</span><span id="benchmarkState">EDGE AI ACTIVE</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+</div>
+</main>
+</div>
+
+<div class="toast" id="toast"></div>
+<div class="presentation" id="presentation">
+  <div class="presbox">
+    <h2>EDGEFLEET — EXAMINER MODE</h2>
+    <div class="sub">A guided live demonstration of decentralized AMR coordination</div>
+    <div class="progress"><span id="presProgress"></span></div>
+    <div class="presstep" id="presText"></div>
+    <div class="pres-actions"><button class="btn" id="presClose">CLOSE</button><div><button class="btn" id="presPrev">← PREV</button> <button class="btn primary" id="presNext">NEXT →</button></div></div>
+  </div>
+</div>
+
+
+<script>
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+let ws=null, connected=false, running=false, paused=false, selected=1;
+let scenario='normal', mode='ai', speed=1, serverOnline=true;
+let presIndex=0;
+
+function toast(t){const x=$('#toast');x.textContent=t;x.classList.add('show');setTimeout(()=>x.classList.remove('show'),1800)}
+function addEvent(text,type='ai',t=null){
+  const box=$('#events'); const d=document.createElement('div'); d.className='event '+type;
+  const tm=t==null?'--':('T+'+String(Math.floor(t)).padStart(2,'0'));
+  d.innerHTML='<time>'+tm+'</time><div><strong>'+text+'</strong></div>';
+  box.prepend(d); while(box.children.length>9) box.lastChild.remove();
+}
+function setRobot(id,x,y,status,battery){
+  const r=$('#r'+id); if(!r)return;
+  r.style.left=x+'%'; r.style.top=y+'%';
+  r.querySelector('.status').textContent=status+' · '+battery+'%';
+}
+function applyState(s){
+  if(!s)return;
+  if(s.time!=null){
+    const t='T+'+String(Math.floor(s.time)).padStart(2,'0');
+    $('#simTime').textContent=t; $('#clock').textContent=t;
+  }
+  if(s.mode){ mode=s.mode; $('#modeText').textContent=mode==='ai'?'DECENTRALIZED EDGE AI':'STOP-AND-WAIT BASELINE'; $('#benchmarkState').textContent=mode==='ai'?'EDGE AI ACTIVE':'BASELINE ACTIVE'; }
+  if(s.running!==undefined){running=s.running; paused=s.paused||false; $('#pause').textContent=paused?'▶ RESUME':'Ⅱ PAUSE';}
+  if(s.scenario){scenario=s.scenario; $('#scenario').value=scenario;}
+  if(s.server_online!==undefined){
+    serverOnline=s.server_online;
+    $('#serverSide').textContent=serverOnline?'ONLINE':'OFFLINE';
+    $('#serverSide').className=serverOnline?'ok':'warn';
+    $('#serverToggle').textContent=serverOnline?'CENTRAL SERVER ONLINE':'CENTRAL SERVER OFFLINE';
+  }
+  if(s.risk!==undefined){$('#risk').textContent=s.risk+'%'; $('#risk').style.color=s.risk>60?'var(--red)':'var(--green)';}
+  if(s.decision) $('#decision').textContent=s.decision;
+  if(s.links!==undefined){$('#links').textContent=s.links;$('#sideLinks').textContent=s.links;}
+  if(s.collisions!==undefined){$('#collisions').textContent=s.collisions;$('#sideCollisions').textContent=s.collisions;}
+  if(s.robots){
+    s.robots.forEach(r=>{
+      setRobot(r.id,r.x,r.y,r.status,r.battery);
+      $('#battery'+r.id).textContent=r.battery+'%';
+      $('#bar'+r.id).style.width=r.battery+'%';
+      const card=document.querySelector('#battery'+r.id)?.parentElement;
+      if(card && r.task) card.querySelector('.small').textContent=r.task+' · '+r.speed.toFixed(1)+' m/s';
+    });
+  }
+  if(s.scenario_text) $('#scenarioText').textContent=s.scenario_text;
+  if(s.task_text) $('#taskText').textContent=s.task_text;
+}
+function connect(){
+  const proto=location.protocol==='https:'?'wss':'ws';
+  const host=location.host || 'localhost:8000';
+  ws=new WebSocket(proto+'://'+host+'/ws');
+  ws.onopen=()=>{
+    connected=true;
+    toast('Backend connected');
+    addEvent('FastAPI backend connected · live fleet telemetry active','ai');
+    ws.send(JSON.stringify({action:'state'}));
+  };
+  ws.onmessage=e=>{
+    const m=JSON.parse(e.data);
+    if(m.type==='state') applyState(m.data);
+    if(m.type==='event') addEvent(m.message,m.level||'ai',m.time);
+  };
+  ws.onclose=()=>{
+    connected=false;
+    toast('Backend disconnected');
+    addEvent('Backend connection lost · waiting for reconnect','bad');
+    setTimeout(connect,1500);
+  };
+  ws.onerror=()=>{};
+}
+function send(action,extra={}){
+  if(!ws || ws.readyState!==WebSocket.OPEN){toast('Backend not connected');return}
+  ws.send(JSON.stringify({action,...extra}));
+}
+$('#start').onclick=()=>send('start');
+$('#pause').onclick=()=>send('pause');
+$('#reset').onclick=()=>send('reset');
+$$('.speed').forEach(b=>b.onclick=()=>{$$('.speed').forEach(x=>x.classList.remove('active'));b.classList.add('active');speed=+b.dataset.speed;send('speed',{value:speed})});
+$$('.modebtn').forEach(b=>b.onclick=()=>{$$('.modebtn').forEach(x=>x.classList.remove('active'));b.classList.add('active');mode=b.dataset.mode;send('mode',{value:mode})});
+$('#scenario').onchange=e=>{scenario=e.target.value;send('scenario',{value:scenario})};
+$('#serverToggle').onclick=()=>send('server_toggle');
+['1','2','3'].forEach(i=>$('#r'+i).onclick=()=>{selected=+i;toast('AMR-0'+i+' telemetry selected');send('select',{robot:i})});
+$$('.nav button[data-scroll]').forEach(b=>b.onclick=()=>document.getElementById(b.dataset.scroll).scrollIntoView({behavior:'smooth'}));
+
+const presSteps=[
+['1 / 8','Start the fleet','Click START DEMO. Three AMRs begin moving through the warehouse using backend-controlled robot state.'],
+['2 / 8','Show P2P coordination','Open the P2P Network panel. The FastAPI backend publishes live position and intent data for all three robots.'],
+['3 / 8','Create a choke point','Select Choke Point Conflict. The backend conflict engine makes AMR-02 yield while the fleet continues.'],
+['4 / 8','Show edge decision loop','Point to DETECT → PREDICT → DECIDE → ACT in Safety Shield. The backend exposes the local decision result to the dashboard.'],
+['5 / 8','Block an aisle','Select Blocked Aisle + Reroute. The route planner changes the robot path and the task continues.'],
+['6 / 8','Demonstrate robot failure','Select AMR-02 Failure + Handoff. AMR-02 loses its heartbeat and AMR-03 receives the handoff.'],
+['7 / 8','Demonstrate server independence','Select Central Server Failure. Toggle the server offline. P2P coordination remains active in the simulation.'],
+['8 / 8','Close with metrics','Show zero inter-robot collisions and the benchmark. Explain that the benchmark values are simulation metrics for the demonstration.']
+];
+function renderPres(){
+  const s=presSteps[presIndex];
+  $('#presText').innerHTML='<div style="color:var(--cyan);font-size:11px;margin-bottom:8px">'+s[0]+'</div><h3 style="margin:0 0 8px;color:#fff">'+s[1]+'</h3><div>'+s[2]+'</div>';
+  $('#presProgress').style.width=((presIndex+1)/presSteps.length*100)+'%';
+}
+$('#presentationBtn').onclick=()=>{$('#presentation').classList.add('show');presIndex=0;renderPres()};
+$('#presClose').onclick=()=>$('#presentation').classList.remove('show');
+$('#presPrev').onclick=()=>{presIndex=Math.max(0,presIndex-1);renderPres()};
+$('#presNext').onclick=()=>{if(presIndex<presSteps.length-1){presIndex++;renderPres()}else $('#presentation').classList.remove('show')};
+
+connect();
+</script>
+
+</body>
+</html>
